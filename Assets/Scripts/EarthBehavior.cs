@@ -9,6 +9,9 @@ public class EarthBehavior : MonoBehaviour {
 	private Vector3 _rotation;
 	private bool _isRotating;
 
+	private Vector3 pastPos;
+	private Vector3 currentPos;
+
 	// Use this for initialization
 	void Start () {
 		_sensitivity = 0.4f;
@@ -19,18 +22,30 @@ public class EarthBehavior : MonoBehaviour {
 	void Update () {
 		if(_isRotating)
 		{
+			currentPos = Input.mousePosition;
+			pastPos.x = pastPos.x-Screen.width/2;
+			pastPos.y = pastPos.y-Screen.height/2; 
+			currentPos.x = currentPos.x-Screen.width/2;
+			currentPos.y = currentPos.y-Screen.height/2;
+			float angle = Vector3.Angle (pastPos,currentPos);
+			Vector3 cross = Vector3.Cross(pastPos,currentPos);
+
 			// offset
-			_mouseOffset = (Input.mousePosition - _mouseReference);
-			
+			//_mouseOffset = (Input.mousePosition - _mouseReference);
+
+			//finds if obtuse angle
+			if (cross.z < 0){
+				angle = 360 - angle;
+			} 
+
 			// apply rotation
-			_rotation.y = -(_mouseOffset.x) * _sensitivity;
-			_rotation.x = (_mouseOffset.y) * _sensitivity;
+			_rotation.z = angle;
 			
-			// rotate
+			// rotate 
 			transform.Rotate(_rotation,Space.World);
-			
+	  		
 			// store mouse
-			_mouseReference = Input.mousePosition;
+			pastPos = Input.mousePosition;
 		}
 	}
 
@@ -40,7 +55,7 @@ public class EarthBehavior : MonoBehaviour {
 		_isRotating = true;
 		
 		// store mouse
-		_mouseReference = Input.mousePosition;
+		pastPos = Input.mousePosition;
 	}
 
 	void OnMouseUp()

@@ -12,20 +12,20 @@ public class DragAndRotateEarth : MonoBehaviour {
 
 	}
 
-	void Update () { //This is not running
-		for (float i = 0; i < 100; i ++) {
-			print (i);
-		}   
-		 
+	void Update () {
 
 		if (Input.GetMouseButton (0)) { 
 			if (!hasGrabbedPoint) { 
 				hasGrabbedPoint = true; 
 				grabbedPoint = getTouchedPoint (); 
 			} else { 
-				Vector3 targetPoint = getTouchedPoint (); 
-				Quaternion rot = Quaternion.FromToRotation (grabbedPoint, targetPoint); 
-				transform.rotation *= rot;
+				Vector3 targetPoint = getTouchedPoint ();
+				if (targetPoint == Vector3.zero){
+					print (targetPoint);
+				} else {
+					Quaternion rot = Quaternion.FromToRotation (grabbedPoint, targetPoint); 
+					transform.rotation *= rot;
+				}
 			} 
 		} else { 
 			hasGrabbedPoint = false; 
